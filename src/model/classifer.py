@@ -8,7 +8,7 @@ import numpy as np
 
 methods = ['svm', 'k-means']
 
-class svm(object):
+class Svm(object):
     """
     None
     """
@@ -47,3 +47,20 @@ class svm(object):
         elif spec == 'test':
             self.test_features = feats
             self.test_labels = labels
+
+    @staticmethod
+    def smo(features, labels):
+        """
+        :param features:
+            [
+                [v11, v12, v13, ......, v1n],
+                [v21, v22, v23, ......, v2n],
+                .
+                .
+                [vm1, vm2, vm3, ......, vmn]
+            ]
+        :param labels:
+            [1, 1, -1, ......, 1]
+            length = m
+        """
+        return None
