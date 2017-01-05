@@ -63,4 +63,7 @@ class Svm(object):
             [1, 1, -1, ......, 1]
             length = m
         """
+        if features is None or labels is None:
+            print "no input data"
+            return None
         return None
