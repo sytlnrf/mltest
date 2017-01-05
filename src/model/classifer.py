@@ -10,3 +10,4 @@ import numpy as np
 class Classifer(object):
 
     def __init__(self):
+        print "hhh"
