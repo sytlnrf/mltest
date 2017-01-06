@@ -113,6 +113,7 @@ class Svm(object):
         alpha_j = alpha_i
         while alpha_j == alpha_i:
             alpha_j = int(random.uniform(0, sample_num))
+
         return alpha_j
 
     @staticmethod
@@ -130,6 +131,7 @@ class Svm(object):
         """
         if alpha_j > high:
             alpha_j = high
+
         if alpha_j < low:
             alpha_j = low
 
