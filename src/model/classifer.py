@@ -88,8 +88,8 @@ class Svm(object):
         :param iters:
             max iterate times
         """
-        features_mat = np.float(np.mat(features.astype(float)))
-        labels_mat = np.mat(labels.astype(float)).transpose()
+        features_mat = np.float(np.asmatrix(features).astype(float))
+        labels_mat = np.mat(np.asmatrix(labels).asmatrix().astype(float)).transpose()
         # intercept of hyperplane function
         inter = 0.0
         sample_num, feature_num = np.shape(features_mat)
