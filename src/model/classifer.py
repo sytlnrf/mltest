@@ -88,15 +88,78 @@ class Svm(object):
         :param iters:
             max iterate times
         """
-        features_mat = np.mat(features)
-        labels_mat = np.mat(labels).transpose()
-        b = 0
-        samples, feature_num = np.shape(features_mat)
+        features_mat = np.float(np.mat(features.astype(float)))
+        labels_mat = np.mat(labels.astype(float)).transpose()
+        # intercept of hyperplane function
+        inter = 0.0
+        sample_num, feature_num = np.shape(features_mat)
         # init alphas
-        alphas = np.mat(np.zeros((samples, 1)))
+        alphas = np.mat(np.zeros((sample_num, 1)).astype(float))
         cur_iter = 0
         while cur_iter < iters:
             alpha_pairs_changed = 0
+            for i in range(sample_num):
+                f_x_i = np.multiply(alphas, labels_mat).T * \
+                    (features_mat * features_mat[i, :].T) + inter
+                e_i = f_x_i - labels_mat[i]
+                if ((labels_mat[i] * e_i < -tolerance) and (alphas[i] < uper)) or \
+                    ((labels_mat[i] * e_i > tolerance) and (alphas[i] > 0)):
+                    j = Svm.select_j_rand(i, feature_num)
+                    f_x_j = np.multiply(alphas, labels_mat).T * \
+                        (features_mat * features_mat[j, :].T) + inter
+                    e_j = f_x_j - labels_mat[j]
+                    alpha_i_old = alphas[i].copy()
+                    alpha_j_old = alphas[j].copy()
+                    if labels_mat[i] != labels_mat[j]:
+                        low = max(0.0, alphas[j] - alphas[i])
+                        high = min(uper, uper + alphas[j] - alphas[i])
+                    else:
+                        low = max(0.0, alphas[j] + alphas[i] - uper)
+                        high = min(uper, alphas[j] + alphas[i])
+                    if low == high:
+                        print "low == high"
+                        continue
+                    eta = 2.0 * features_mat[i, :] * features_mat[j, :].T - \
+                        features_mat[i, :] * features_mat[i, :].T - \
+                        features_mat[j, :] * features_mat[j, :].T
+                    if eta >= 0:
+                        print "eta >= 0"
+                        continue
+                    alphas[j] -= labels_mat[j] * (e_i - e_j) / eta
+                    alphas[j] = Svm.clip_alpha(alphas[j], high, low)
+
+                    if abs(alphas[j] - alpha_j_old) < 0.00001:
+                        print "j not moving enough"
+                        continue
+
+                    alphas[i] += labels_mat[j] * labels_mat[i] * (alpha_j_old - alphas[j])
+
+                    b_1 = inter - e_i - labels_mat[i] * (alphas[i] - alpha_i_old) * \
+                        features_mat[i, :] * features_mat[i, :].T - \
+                        labels_mat[j] * (alphas[j] - alpha_j_old) * \
+                        features_mat[i, :] * features_mat[j, :].T
+
+                    b_2 = inter - e_j - labels_mat[i] * (alphas[i] - alpha_i_old) * \
+                        features_mat[i, :] * features_mat[i, :].T - \
+                        labels_mat[j] * (alphas[j] - alpha_j_old) * \
+                        features_mat[j, :] * features_mat[j, :].T
+
+                    if alphas[i] > 0 and alphas[i] < uper:
+                        inter = b_1
+                    elif alphas[j] > 0 and alphas[j] < uper:
+                        inter = b_2
+                    else:
+                        inter = (b_1 + b_2) / 2.0
+                    alpha_pairs_changed += 1
+                    print "current iteration: %d i:%d, pairs changed %d" % \
+                        (cur_iter, i, alpha_pairs_changed)
+            if alpha_pairs_changed == 0:
+                cur_iter += 1
+            else:
+                cur_iter = 0
+            print "iteration number: %d" % cur_iter
+        return alphas, inter
+
 
     @staticmethod
     def select_j_rand(alpha_i, sample_num):
