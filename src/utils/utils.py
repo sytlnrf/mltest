@@ -28,11 +28,13 @@ def load_data_ml(file_name):
             [1, 1, -1, ......, 1]
             length = m
     """
-    features = np.array()
-    labels = np.array()
+    features = []
+    labels = []
     file_handle = open(file_name)
     for line in file_handle.readlines():
         line_arr = line.strip().split('\t')
-        np.append(features, line_arr[:-1])
-        np.append(labels, float(line_arr[-1]))
+        features.append(line_arr[:-1])
+        labels.append(line_arr[-1])
+    features = np.array(features)
+    labels = np.array(labels)
     return features, labels
