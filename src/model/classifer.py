@@ -20,6 +20,8 @@ class Svm(object):
         self.train_labels = None
         self.test_features = None
         self.test_labels = None
+        self.alphas = None
+        self.intercept = None
 
     def load_data(self, feats, labels, spec='train'):
         """
@@ -48,7 +50,15 @@ class Svm(object):
         elif spec == 'test':
             self.test_features = feats
             self.test_labels = labels
-
+    def train(self):
+        """
+        train svm and get the hyper plane parameters
+        """
+        alphas, intercept = Svm.smo_simple(self.train_features, self.train_labels, 0.6, 0.001, 40)
+        self.alphas = alphas
+        self.intercept = intercept
+        print alphas
+        print intercept
     @staticmethod
     def smo(features, labels):
         """
@@ -88,8 +98,8 @@ class Svm(object):
         :param iters:
             max iterate times
         """
-        features_mat = np.float(np.asmatrix(features).astype(float))
-        labels_mat = np.mat(np.asmatrix(labels).asmatrix().astype(float)).transpose()
+        features_mat = np.asmatrix(features).astype(float)
+        labels_mat = np.asmatrix(labels).astype(float).transpose()
         # intercept of hyperplane function
         inter = 0.0
         sample_num, feature_num = np.shape(features_mat)

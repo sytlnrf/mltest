@@ -1,0 +1,13 @@
+*.pyc
+tmp/
+*.swp
+*.swo
+*.csv
+data/
+*.pyc
+*.swp
+*.swo
+*.tar.gz
+nohup.out
+config.py
+*.log
