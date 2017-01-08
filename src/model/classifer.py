@@ -22,6 +22,7 @@ class Svm(object):
         self.test_labels = None
         self.alphas = None
         self.intercept = None
+        self.weights = None
 
     def load_data(self, feats, labels, spec='train'):
         """
@@ -57,8 +58,21 @@ class Svm(object):
         alphas, intercept = Svm.smo_simple(self.train_features, self.train_labels, 0.6, 0.001, 40)
         self.alphas = alphas
         self.intercept = intercept
-        print alphas
-        print intercept
+        self.weights = self.get_w()
+
+    def get_w(self):
+        """
+        get weight of hyper plane
+        """
+        features = np.asmatrix(self.train_features).astype(float)
+        labels = np.asmatrix(self.train_labels).astype(float)
+        alphas = self.alphas
+        samples, feature_num = np.shape(features)
+        weights = np.zeros((feature_num, 1))
+        for i in range(samples):
+            weights += np.multiply(alphas[i][0] * labels[0, i], features[i, :].T)
+        return weights
+
     @staticmethod
     def smo(features, labels):
         """
@@ -114,7 +128,7 @@ class Svm(object):
                 e_i = f_x_i - labels_mat[i]
                 if ((labels_mat[i] * e_i < -tolerance) and (alphas[i] < uper)) or \
                     ((labels_mat[i] * e_i > tolerance) and (alphas[i] > 0)):
-                    j = Svm.select_j_rand(i, feature_num)
+                    j = Svm.select_j_rand(i, sample_num)
                     f_x_j = np.multiply(alphas, labels_mat).T * \
                         (features_mat * features_mat[j, :].T) + inter
                     e_j = f_x_j - labels_mat[j]
@@ -209,3 +223,4 @@ class Svm(object):
             alpha_j = low
 
         return alpha_j
+    
