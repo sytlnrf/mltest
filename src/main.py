@@ -17,4 +17,5 @@ if __name__ == "__main__":
 
     svmplot.plot_dots_hyper_lane_2(feature_arr, label_arr, \
         svm_classifer.alphas, svm_classifer.intercept, svm_classifer.weights)
+    print "done"
 
