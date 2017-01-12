@@ -39,7 +39,7 @@ class Svm(object):
                 [vm1, vm2, vm3, ......, vmn]
             ]
             'm' is the number of rows(data number)
-            'n' is the number of columns(feature number)
+            'n' is the number of columns(f eature number)
         :param labels:
             [1, 1, -1, ......, 1]
             length = m
@@ -55,6 +55,9 @@ class Svm(object):
         """
         train svm and get the hyper plane parameters
         """
+        if self.train_features is None or self.train_labels is None:
+            print "no training data"
+            return None
         alphas, intercept = Svm.smo_simple(self.train_features, self.train_labels, 0.6, 0.001, 40)
         self.alphas = alphas
         self.intercept = intercept
@@ -95,7 +98,7 @@ class Svm(object):
     @staticmethod
     def smo_simple(features, labels, uper, tolerance, iters):
         """
-        :param features:
+        :param features:numpy array
             [
                 [v11, v12, v13, ......, v1n],
                 [v21, v22, v23, ......, v2n],
@@ -103,13 +106,14 @@ class Svm(object):
                 .
                 [vm1, vm2, vm3, ......, vmn]
             ]
-        :param labels:
+        :param labels:numpy array
             [1, 1, -1, ......, 1]
             length = m
-        :param uper:
-            0<alpha<uper
-        :param tolerance:
-        :param iters:
+        :param uper:float
+            0<=alpha<=uper(find alpha s.t. 0<alpha<C), is called penalty parameter
+        :param tolerance:float
+            the error can be tolerated
+        :param iters:int
             max iterate times
         """
         features_mat = np.asmatrix(features).astype(float)
@@ -117,6 +121,7 @@ class Svm(object):
         # intercept of hyperplane function
         inter = 0.0
         sample_num, feature_num = np.shape(features_mat)
+        del feature_num
         # init alphas
         alphas = np.mat(np.zeros((sample_num, 1)).astype(float))
         cur_iter = 0
@@ -177,13 +182,13 @@ class Svm(object):
                     alpha_pairs_changed += 1
                     print "current iteration: %d i:%d, pairs changed %d" % \
                         (cur_iter, i, alpha_pairs_changed)
-            if alpha_pairs_changed == 0:
-                cur_iter += 1
-            else:
-                cur_iter = 0
+            # if alpha_pairs_changed == 0:
+            cur_iter += 1
+            # else:
+            #     cur_iter = 0
+            # cur_iter += 1
             print "iteration number: %d" % cur_iter
         return alphas, inter
-
 
     @staticmethod
     def select_j_rand(alpha_i, sample_num):
@@ -223,4 +228,4 @@ class Svm(object):
             alpha_j = low
 
         return alpha_j
-    
+
