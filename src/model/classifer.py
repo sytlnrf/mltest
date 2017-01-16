@@ -58,7 +58,7 @@ class Svm(object):
         if self.train_features is None or self.train_labels is None:
             print "no training data"
             return None
-        alphas, intercept = Svm.smo_simple(self.train_features, self.train_labels, 0.6, 0.001, 40)
+        alphas, intercept = Svm.smo_simple(self.train_features, self.train_labels, 1.0, 0.001, 30)
         self.alphas = alphas
         self.intercept = intercept
         self.weights = self.get_w()
@@ -127,7 +127,13 @@ class Svm(object):
         cur_iter = 0
         while cur_iter < iters:
             alpha_pairs_changed = 0
+            print "******"
+            print cur_iter
+            print "******"
             for i in range(sample_num):
+                # print "*******"
+                # print i
+                # print "*******"
                 f_x_i = np.multiply(alphas, labels_mat).T * \
                     (features_mat * features_mat[i, :].T) + inter
                 e_i = f_x_i - labels_mat[i]
@@ -146,19 +152,19 @@ class Svm(object):
                         low = max(0.0, alphas[j] + alphas[i] - uper)
                         high = min(uper, alphas[j] + alphas[i])
                     if low == high:
-                        print "low == high"
+                        # print "low == high"
                         continue
                     eta = 2.0 * features_mat[i, :] * features_mat[j, :].T - \
                         features_mat[i, :] * features_mat[i, :].T - \
                         features_mat[j, :] * features_mat[j, :].T
                     if eta >= 0:
-                        print "eta >= 0"
+                        # print "eta >= 0"
                         continue
                     alphas[j] -= labels_mat[j] * (e_i - e_j) / eta
                     alphas[j] = Svm.clip_alpha(alphas[j], high, low)
 
                     if abs(alphas[j] - alpha_j_old) < 0.00001:
-                        print "j not moving enough"
+                        # print "j not moving enough"
                         continue
 
                     alphas[i] += labels_mat[j] * labels_mat[i] * (alpha_j_old - alphas[j])
@@ -182,12 +188,12 @@ class Svm(object):
                     alpha_pairs_changed += 1
                     print "current iteration: %d i:%d, pairs changed %d" % \
                         (cur_iter, i, alpha_pairs_changed)
-            # if alpha_pairs_changed == 0:
-            cur_iter += 1
-            # else:
-            #     cur_iter = 0
+            if alpha_pairs_changed == 0:
+                cur_iter += 1
+            else:
+                cur_iter = 0
             # cur_iter += 1
-            print "iteration number: %d" % cur_iter
+            # print "iteration number: %d" % cur_iter
         return alphas, inter
 
     @staticmethod
