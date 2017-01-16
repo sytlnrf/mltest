@@ -37,12 +37,12 @@ def plot_dots_hyper_lane_2(features, labels, alphas, intercept, weights):
             facecolor='none', edgecolor=(0, 0.8, 0.8), linewidth=2, alpha=0.5)
         ax.add_patch(circle)
 
-    svc_x = np.arange(0.0, 3500, 50)
+    svc_x = np.arange(0.0, 10, 0.5)
     svc_y = (-weights[0][0] * svc_x - intercept) / weights[1][0]
 
     svc_y = np.asarray(svc_y)[0]
     ax.plot(svc_x, svc_y)
-    ax.axis([2500, 3500, 2500, 3500])
+    ax.axis([0, 10, -2, 6])
     plt.show()
     # plt.plot(x_pos, y_pos, 'r.')
     # plt.plot(x_neg, y_neg, 'b.')
