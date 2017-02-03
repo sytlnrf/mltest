@@ -404,13 +404,15 @@ class SvmComplete(object):
             if entire_set:
                 for i in range(ss.samples):
                     alpha_paired_changed += SvmComplete.inner_loop(i, ss)
-                print "full set, inter:%d, i:%d, pairs changed %d" % (cur_iter, i, alpha_paired_changed)
+                print "full set, inter:%d, i:%d, pairs changed %d" % \
+                    (cur_iter, i, alpha_paired_changed)
                 cur_iter += 1
             else:
                 non_bound_is = np.nonzero((ss.alphas.A > 0) * (ss.alphas.A < ss.uper))[0]
                 for i in non_bound_is:
                     alpha_paired_changed += SvmComplete.inner_loop(i, ss)
-                    print "non_bound_is, iter: %d i:%d, pairs changed %d" % (cur_iter, i, alpha_paired_changed)
+                    print "non_bound_is, iter: %d i:%d, pairs changed %d" % \
+                        (cur_iter, i, alpha_paired_changed)
                 cur_iter += 1
             if entire_set:
                 entire_set = False
