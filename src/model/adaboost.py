@@ -5,6 +5,7 @@ Create Date: 2017-02-12
 """
 
 import numpy as np
+import math
 
 class AdaboostDemo(object):
     """
@@ -74,5 +75,55 @@ class AdaboostDemo(object):
                 return 1
         else:
             return -2
+    class Adaboost(object):
+        def __init__(self, feat_values, labels):
+            print "init"
+        @staticmethod
+        def stump_classifier(feat_values, dimen, thres_val, thres_ineq):
+            """
+            """
+            ret_array = np.ones((np.shape(feat_values)[0], 1))
+            if thres_ineq == 'lt':
+                ret_array[feat_values[: dimen] <= thres_val] = -1
+            else:
+                ret_array[feat_values[:, dimen] > thres_val] = -1
+            return ret_array
+
+        @staticmethod
+        def build_stump(feat_values, labels, weight_dis):
+            """
+            build the stump classifer
+            :params feat_value: feature values matrix
+            :params labels: class label of each sample
+            :params weight_dis: initial weights distribution of adaboost
+            """
+            m, n = np.shape(feat_values)
+            step_num = 10
+            final_stump = {}
+            best_class_est = np.matrix(np.zeros((m, 1)))
+            min_err = float("inf")
+            for ite in range(n):
+                min_value = feat_values[:, ite].min()
+                max_value = feat_values[:, ite].max()
+                step_size = (max_value - min_value) / float(step_num)
+                temp_step = step_num + 1
+                for ite_value in range(-1, temp_step):
+                    for inequal in ['lt', 'gt']:
+                        thres_value = (min_value + float(ite_value) * step_size)
+                        predict_value = Adaboost.stump_classifier(feat_values, thres_value, inequal)
+                        err_arr = np.matrix(np.ones((m, 1)))
+                        err_arr[predict_value == labels] = 0
+                        weight_err = weight_dis.T * err_arr
+                        print "split: dim %d, thres %.2f, thres \
+                            inequal: %s, the weight error is %.3f" %\
+                            (ite, thres_value, inequal, weight_err)
+                        if weight_err < min_err:
+                            min_err = weight_err
+                            best_class_est = predict_value.copy()
+                            final_stump['dim'] = ite
+                            final_stump['thres'] = thres_value
+                            final_stump['inequal'] = inequal
+            return final_stump, min_err, best_class_est
+
 if __name__ == "__main__":
-    demoobj = AdaboostDemo()
+    # demoobj = AdaboostDemo()
