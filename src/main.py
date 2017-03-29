@@ -34,7 +34,11 @@ if __name__ == "__main__":
     # feature_arr, label_arr = utils.load_csv_ml(PRO_DIR + "/data/index_000300_daily.csv")
 
     # test_inte_svm()
-    print regression.stand_regress(feature_arr, label_arr)
+    ####################
+    # regression.stand_regress(feature_arr, label_arr)
+    # print regression.lwlr(feature_arr[0], feature_arr, label_arr, k=0.001)
+    print regression.lwlr_test(feature_arr, feature_arr, label_arr, k=0.001)
+
 
 
 
