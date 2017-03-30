@@ -7,7 +7,7 @@ def stand_regress(feat_values, labels):
     x_T_x = x_mat.T * x_mat
     if np.linalg.det(x_T_x) == 0.0:
         print "can not do inverse"
-    w_s = x_T_x.I * (x_mat.T * y_mat)
+    w_s = x_T_x.I * (x_mat.T * y_mat) 
     return w_s
 def lwlr(x_i, feat_values, labels, k=1.0):
     x_i = np.mat(x_i, dtype=float)[0]
@@ -31,5 +31,10 @@ def lwlr_test(test_data, feat_values, labels, k=1.0):
     for i in range(m):
         y_heris[i] = lwlr(test_data[i], feat_values, labels, k)
     return y_heris
+def res_error(y1, y2):
+    y_r = np.array(y1, dtype=float)
+    y_t = np.array(y2, dtype=float)
+    print y_r
+    return ((y_r - y_t)**2).sum()
 # if __name__ == "__main__":
 #     feat_values, labels = 

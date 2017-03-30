@@ -4,7 +4,7 @@ util functions
 """
 import numpy as np
 import pandas as pd 
-
+import os
 def load_text_ml(file_name):
     """
     load data from txt format file

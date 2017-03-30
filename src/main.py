@@ -12,7 +12,7 @@ from sklearn import svm
 from model import regression
 def test_inte_svm():
     PRO_DIR = config.get_project_dir()
-    feature_arr, label_arr = utils.load_text_ml(PRO_DIR + "/data/testSet.txt")
+    feature_arr, label_arr = utils.load_text_ml(PRO_DIR + "/data/abalone.txt")
     # feature_arr, label_arr = utils.load_csv_ml(PRO_DIR + "/data/index_000300_daily.csv")
     clf = svm.SVC()
     clf.fit(feature_arr, label_arr)
@@ -20,7 +20,7 @@ def test_inte_svm():
     # print clf.support_vector_
 if __name__ == "__main__":
     PRO_DIR = config.get_project_dir()
-    feature_arr, label_arr = utils.load_text_ml(PRO_DIR + "/data/ex0.txt")
+    feature_arr, label_arr = utils.load_text_ml(PRO_DIR + "/data/abalone.txt")
     # feature_arr, label_arr = utils.load_csv_ml(PRO_DIR + "/data/index_000300_daily.csv")
     # print np.shape(feature_arr), np.shape(label_arr)
     # svm_classifer = classifer.SvmComplete(feature_arr, label_arr, 0.6, 0.001)
@@ -37,7 +37,9 @@ if __name__ == "__main__":
     ####################
     # regression.stand_regress(feature_arr, label_arr)
     # print regression.lwlr(feature_arr[0], feature_arr, label_arr, k=0.001)
-    print regression.lwlr_test(feature_arr, feature_arr, label_arr, k=0.001)
+    # print feature_arr
+    y1 = regression.lwlr_test(feature_arr[0:99], feature_arr[0:99], label_arr[0:99], k=0.1)
+    print regression.res_error(label_arr[0:99],y1)
 
 
 
