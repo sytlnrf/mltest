@@ -31,6 +31,28 @@ def lwlr_test(test_data, feat_values, labels, k=1.0):
     for i in range(m):
         y_heris[i] = lwlr(test_data[i], feat_values, labels, k)
     return y_heris
+def ridge_regress(feat_values, labels, lam=0.2):
+    x_T_x = feat_values.T * feat_values
+    denom = x_T_x + np.eye(np.shape(feat_values)[1]) * lam
+    if np.linalg.det(denom) == 0:
+        print "can not do inverse"
+        return
+    ws = denom.I * (feat_values.T * labels)
+    return ws
+def ridgeTest(feat_values, labels):
+    x_mat = np.mat(feat_values, dtype=float)
+    y_mat = np.mat(labels, dtype=float).T
+    y_mean = np.mean(y_mat, 0)
+    y_mat = y_mat - y_mean
+    x_means = np.mean(x_mat, 0)
+    x_var = np.var(x_mat, 0)
+    x_mat = (x_mat - x_means) / x_var
+    num_test_pts = 30
+    w_mat = np.zeros((num_test_pts, np.shape(x_mat)[1]))
+    for i in range(num_test_pts):
+        ws = ridge_regress(x_mat, y_mat, np.exp(i-10))
+        w_mat[i, :] = ws.T
+    return w_mat
 def res_error(y1, y2):
     y_r = np.array(y1, dtype=float)
     y_t = np.array(y2, dtype=float)

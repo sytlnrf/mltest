@@ -10,6 +10,8 @@ from show import svmplot
 import numpy as np
 from sklearn import svm
 from model import regression
+import matplotlib.pyplot as plt
+
 def test_inte_svm():
     PRO_DIR = config.get_project_dir()
     feature_arr, label_arr = utils.load_text_ml(PRO_DIR + "/data/abalone.txt")
@@ -38,9 +40,14 @@ if __name__ == "__main__":
     # regression.stand_regress(feature_arr, label_arr)
     # print regression.lwlr(feature_arr[0], feature_arr, label_arr, k=0.001)
     # print feature_arr
-    y1 = regression.lwlr_test(feature_arr[0:99], feature_arr[0:99], label_arr[0:99], k=0.1)
-    print regression.res_error(label_arr[0:99],y1)
-
+    # y1 = regression.lwlr_test(feature_arr[0:99], feature_arr[0:99], label_arr[0:99], k=0.1)
+    # print regression.res_error(label_arr[0:99],y1)
+    w = regression.ridgeTest(feature_arr, label_arr)
+    print w
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(w)
+    plt.show()
 
 
 
